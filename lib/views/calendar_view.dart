@@ -3,18 +3,17 @@ import 'package:inf_flutter_calendar/inf_flutter_calendar.dart';
 
 class CalendarView extends StatefulWidget {
   final List<CalendarEvent> calendarEvents;
+  final Function(CalendarDate? calendarDate)? onDateClick;
 
-  const CalendarView({
-    super.key,
-    required this.calendarEvents,
-  });
+  const CalendarView(
+      {super.key, required this.calendarEvents, required this.onDateClick});
 
   @override
   State<CalendarView> createState() => _CalendarViewState();
 }
 
 class _CalendarViewState extends State<CalendarView> {
-  final DateTime _now = DateTime.now();
+  DateTime get _now => CalendarUtils.now;
 
   ///
   /// Use to calculate next, prev months
@@ -126,17 +125,40 @@ class _CalendarViewState extends State<CalendarView> {
   }
 
   Widget buildDay(CalendarDate? calendarDate) {
-    return Container(
-      decoration: BoxDecoration(
-          color: (calendarDate == null)
-              ? Colors.grey.withOpacity(0.2)
-              : (CalendarUtils.isSameDate(calendarDate.dateTime, _now))
-                  ? Colors.green.withOpacity(0.3)
-                  : null,
-          border: Border.all(color: Colors.grey.withOpacity(0.7), width: 0.5)),
-      child: Text(
-        (calendarDate?.dateTime.day ?? '').toString(),
-        style: TextStyle(fontSize: 16, color: Colors.black),
+    return InkWell(
+      onTap: () {
+        widget.onDateClick?.call(calendarDate);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            color: (calendarDate == null)
+                ? Colors.grey.withOpacity(0.2)
+                : (CalendarUtils.isSameDate(calendarDate.dateTime, _now))
+                    ? Colors.green.withOpacity(0.3)
+                    : null,
+            border:
+                Border.all(color: Colors.grey.withOpacity(0.7), width: 0.5)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              (calendarDate?.dateTime.day ?? '').toString(),
+              style: TextStyle(fontSize: 16, color: Colors.black),
+            ),
+            Expanded(
+                child: ListView(
+              padding: const EdgeInsets.all(2),
+              children: List.generate(calendarDate?.events.length ?? 0, (i) {
+                final event = calendarDate?.events[i];
+                return Text('•${event?.title}',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.red,
+                        fontWeight: FontWeight.w500));
+              }),
+            )),
+          ],
+        ),
       ),
     );
   }
