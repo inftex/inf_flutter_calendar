@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:inf_flutter_calendar/inf_flutter_calendar.dart';
 
 class CalendarView extends StatefulWidget {
-  final List<EventByDate> eventByDateList;
+  final List<CalendarEvent> calendarEvents;
 
   const CalendarView({
     super.key,
-    required this.eventByDateList,
+    required this.calendarEvents,
   });
 
   @override
@@ -21,8 +21,9 @@ class _CalendarViewState extends State<CalendarView> {
   ///
   late DateTime _currentDateAnchor;
 
-  List<DateTime?> get _datesOfMonth =>
-      CalendarUtils.createCalendarMonnthDates(_currentDateAnchor);
+  List<CalendarDate?> get _datesOfMonth =>
+      CalendarUtils.createCalendarMonthDates(
+          _currentDateAnchor, widget.calendarEvents);
 
   @override
   void initState() {
@@ -124,19 +125,17 @@ class _CalendarViewState extends State<CalendarView> {
     );
   }
 
-  Widget buildDay(DateTime? dateTime) {
+  Widget buildDay(CalendarDate? calendarDate) {
     return Container(
       decoration: BoxDecoration(
-          color: (dateTime == null)
+          color: (calendarDate == null)
               ? Colors.grey.withOpacity(0.2)
-              : (dateTime.year == _now.year &&
-                      dateTime.day == _now.day &&
-                      dateTime.month == _now.month)
+              : (CalendarUtils.isSameDate(calendarDate.dateTime, _now))
                   ? Colors.green.withOpacity(0.3)
                   : null,
           border: Border.all(color: Colors.grey.withOpacity(0.7), width: 0.5)),
       child: Text(
-        (dateTime?.day ?? '').toString(),
+        (calendarDate?.dateTime.day ?? '').toString(),
         style: TextStyle(fontSize: 16, color: Colors.black),
       ),
     );

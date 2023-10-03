@@ -1,5 +1,6 @@
 // models
-export 'models/date_event.dart';
+export 'models/calendar_event.dart';
+export 'models/calendar_date.dart';
 
 // utils
 export 'utils/calendar_utils.dart';

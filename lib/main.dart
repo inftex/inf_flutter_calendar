@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Flexible(
               child: CalendarView(
-                eventByDateList: [],
+                calendarEvents: [],
               ),
             ),
           ],

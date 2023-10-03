@@ -1,3 +1,5 @@
+import 'package:inf_flutter_calendar/inf_flutter_calendar.dart';
+
 class CalendarUtils {
   CalendarUtils._();
 
@@ -6,23 +8,29 @@ class CalendarUtils {
   ///
   /// if start of month is not Monday, add null
   ///
-  static List<DateTime?> createCalendarMonnthDates(DateTime dateTime) {
-    final dates = <DateTime?>[];
-    int dayOfMonth = getNumDayOfMonth(dateTime.month, dateTime.year);
+  static List<CalendarDate?> createCalendarMonthDates(
+      DateTime anchorMonth, List<CalendarEvent> events) {
+    final dates = <CalendarDate?>[];
+    int dayOfMonth = getNumDayOfMonth(anchorMonth.month, anchorMonth.year);
 
     // Fill head
-    int weekDay = DateTime(dateTime.year, dateTime.month, 1).weekday;
+    int weekDay = DateTime(anchorMonth.year, anchorMonth.month, 1).weekday;
     for (int i = 1; i < weekDay; i++) {
       dates.add(null);
     }
 
+    late DateTime date;
     for (int i = 1; i <= dayOfMonth; i++) {
-      dates.add(DateTime(dateTime.year, dateTime.month, i));
+      date = DateTime(anchorMonth.year, anchorMonth.month, i);
+      dates.add(CalendarDate(
+        dateTime: date,
+        events: events.where((e) => isSameDate(e.dateTime, date)).toList(),
+      ));
     }
 
     // Fill tail
     int weekDayTail =
-        DateTime(dateTime.year, dateTime.month, dayOfMonth).weekday;
+        DateTime(anchorMonth.year, anchorMonth.month, dayOfMonth).weekday;
     for (int i = weekDayTail; i < 7; i++) {
       dates.add(null);
     }
@@ -40,4 +48,8 @@ class CalendarUtils {
 
   static bool isLeapYear(int year) =>
       (year % 4 == 0) && ((year % 100 != 0) || (year % 400 == 0));
+
+  static bool isSameDate(DateTime d1, DateTime d2) {
+    return d1.year == d2.year && d1.month == d2.month && d1.day == d2.day;
+  }
 }
