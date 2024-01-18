@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:inf_flutter_calendar/inf_flutter_calendar.dart';
 
 class CalendarView extends StatefulWidget {
+  final DateTime? initialMonth;
   final List<CalendarEvent> calendarEvents;
+  final Function(DateTime month)? onMonthChanged;
   final Function(CalendarDate? calendarDate)? onDateClick;
 
   const CalendarView(
-      {super.key, required this.calendarEvents, required this.onDateClick});
+      {super.key,
+      this.initialMonth,
+      required this.calendarEvents,
+      this.onMonthChanged,
+      required this.onDateClick});
 
   @override
   State<CalendarView> createState() => _CalendarViewState();
@@ -32,7 +38,8 @@ class _CalendarViewState extends State<CalendarView> {
 
   void _init() {
     // anchor date
-    _currentDateAnchor = DateTime(_now.year, _now.month, 15);
+    _currentDateAnchor =
+        widget.initialMonth ?? DateTime(_now.year, _now.month, 15);
   }
 
   @override
@@ -87,6 +94,7 @@ class _CalendarViewState extends State<CalendarView> {
             _currentDateAnchor = DateTime(_currentDateAnchor.year,
                 _currentDateAnchor.month - 1, _currentDateAnchor.day);
             setState(() {});
+            widget.onMonthChanged?.call(_currentDateAnchor);
           },
           highlightColor: null,
           child: Container(
@@ -108,6 +116,7 @@ class _CalendarViewState extends State<CalendarView> {
             _currentDateAnchor = DateTime(_currentDateAnchor.year,
                 _currentDateAnchor.month + 1, _currentDateAnchor.day);
             setState(() {});
+            widget.onMonthChanged?.call(_currentDateAnchor);
           },
           highlightColor: null,
           splashColor: null,
