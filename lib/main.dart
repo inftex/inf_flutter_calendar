@@ -101,9 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 onDateClick: (calendarDate) {},
                 calendarEvents: [
                   CalendarEvent(
-                      dateTime: CalendarUtils.now, title: 'now event1'),
+                      dateTime: CalendarUtils.now, title: 'Now Event1'),
                   CalendarEvent(
-                      dateTime: CalendarUtils.now, title: 'now event2'),
+                      dateTime: CalendarUtils.now, title: 'Now Event2'),
                   CalendarEvent(
                       dateTime: CalendarUtils.now.add(const Duration(days: 2)),
                       title: 'event3'),
@@ -112,7 +112,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       title: 'event4'),
                   CalendarEvent(
                       dateTime: CalendarUtils.now.add(const Duration(days: 5)),
-                      title: 'event5')
+                      title: 'event5'),
+                  CalendarEvent(
+                      dateTime: CalendarUtils.now.add(const Duration(days: 5)),
+                      title: 'Nguyen Van A')
                 ],
               ),
             ),

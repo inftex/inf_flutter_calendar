@@ -159,9 +159,9 @@ class _CalendarViewState extends State<CalendarView> {
               padding: const EdgeInsets.all(2),
               children: List.generate(calendarDate?.events.length ?? 0, (i) {
                 final event = calendarDate?.events[i];
-                return Text('•${event?.title}',
+                return Text('${event?.title}',
                     style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.red,
                         fontWeight: FontWeight.w500));
               }),
