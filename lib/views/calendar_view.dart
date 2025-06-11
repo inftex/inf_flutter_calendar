@@ -4,6 +4,17 @@ import 'package:inf_flutter_calendar/inf_flutter_calendar.dart';
 class CalendarView extends StatefulWidget {
   final DateTime? initialMonth;
   final List<CalendarEvent> calendarEvents;
+  final TextStyle? headerStyle;
+  final TextStyle? dateStyle;
+  final TextStyle? eventStyle;
+  final TextStyle? monthChangeStyle;
+  final Color? emptyDateBackgroundColor;
+  final Color? headerBackgroundColor;
+  final Color? dateBackgroundColor;
+  final Color? todayBackgroundColor;
+  final BorderRadiusGeometry? borderRadius;
+  final Border? tabletBorder;
+  final Widget Function(DateTime? date)? dateBuilder;
   final Function(DateTime month)? onMonthChanged;
   final Function(CalendarDate? calendarDate)? onDateClick;
 
@@ -11,6 +22,17 @@ class CalendarView extends StatefulWidget {
       {super.key,
       this.initialMonth,
       required this.calendarEvents,
+      this.headerStyle,
+      this.dateStyle,
+      this.eventStyle,
+      this.monthChangeStyle,
+      this.emptyDateBackgroundColor,
+      this.headerBackgroundColor,
+      this.dateBackgroundColor,
+      this.todayBackgroundColor,
+      this.borderRadius,
+      this.tabletBorder,
+      this.dateBuilder,
       this.onMonthChanged,
       required this.onDateClick});
 
@@ -30,6 +52,10 @@ class _CalendarViewState extends State<CalendarView> {
       CalendarUtils.createCalendarMonthDates(
           _currentDateAnchor, widget.calendarEvents);
 
+  Border get _tableBorder =>
+      widget.tabletBorder ??
+      Border.all(color: Colors.grey.withValues(alpha: 0.2), width: 0.5);
+
   @override
   void initState() {
     super.initState();
@@ -48,33 +74,43 @@ class _CalendarViewState extends State<CalendarView> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // header
-        Row(
-          children: [
-            Expanded(child: buildWeekday('T2')),
-            Expanded(child: buildWeekday('T3')),
-            Expanded(child: buildWeekday('T4')),
-            Expanded(child: buildWeekday('T5')),
-            Expanded(child: buildWeekday('T6')),
-            Expanded(child: buildWeekday('T7')),
-            Expanded(child: buildWeekday('CN'))
-          ],
-        ),
+        Container(
+          decoration: BoxDecoration(
+              border: _tableBorder, borderRadius: widget.borderRadius),
+          child: ClipRRect(
+            borderRadius: widget.borderRadius ?? BorderRadius.zero,
+            child: Column(
+              children: [
+                // header
+                Row(
+                  children: [
+                    Expanded(child: buildWeekday('T2')),
+                    Expanded(child: buildWeekday('T3')),
+                    Expanded(child: buildWeekday('T4')),
+                    Expanded(child: buildWeekday('T5')),
+                    Expanded(child: buildWeekday('T6')),
+                    Expanded(child: buildWeekday('T7')),
+                    Expanded(child: buildWeekday('CN'))
+                  ],
+                ),
 
-        // calendar
-        Flexible(
-          child: GridView.builder(
-              shrinkWrap: true,
-              itemCount: _datesOfMonth.length,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                childAspectRatio: 3 / 4,
-              ),
-              itemBuilder: (BuildContext context, int index) {
-                final date = _datesOfMonth[index];
-                return buildDay(date);
-              }),
+                // calendar
+                GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: _datesOfMonth.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7,
+                      childAspectRatio: 3 / 4,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      final date = _datesOfMonth[index];
+                      return buildDay(date);
+                    })
+              ],
+            ),
+          ),
         ),
 
         // nex prev month
@@ -98,19 +134,20 @@ class _CalendarViewState extends State<CalendarView> {
           },
           highlightColor: null,
           child: Container(
-            padding: EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(4.0),
             alignment: Alignment.center,
-            child: Icon(
+            child: const Icon(
               Icons.arrow_back_ios,
               size: 24,
             ),
           ),
         ),
         Text('${_currentDateAnchor.month}/${_currentDateAnchor.year}',
-            style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-                fontWeight: FontWeight.w500)),
+            style: widget.monthChangeStyle ??
+                const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500)),
         InkWell(
           onTap: () {
             _currentDateAnchor = DateTime(_currentDateAnchor.year,
@@ -121,9 +158,9 @@ class _CalendarViewState extends State<CalendarView> {
           highlightColor: null,
           splashColor: null,
           child: Container(
-            padding: EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(4.0),
             alignment: Alignment.centerRight,
-            child: Icon(
+            child: const Icon(
               Icons.arrow_forward_ios,
               size: 24,
             ),
@@ -141,31 +178,37 @@ class _CalendarViewState extends State<CalendarView> {
       child: Container(
         decoration: BoxDecoration(
             color: (calendarDate == null)
-                ? Colors.grey.withOpacity(0.2)
+                ? (widget.emptyDateBackgroundColor ??
+                    Colors.grey.withValues(alpha: 0.2))
                 : (CalendarUtils.isSameDate(calendarDate.dateTime, _now))
-                    ? Colors.green.withOpacity(0.3)
-                    : null,
-            border:
-                Border.all(color: Colors.grey.withOpacity(0.7), width: 0.5)),
+                    ? (widget.todayBackgroundColor ??
+                        Colors.green.withValues(alpha: 0.3))
+                    : (widget.dateBackgroundColor ?? Colors.white),
+            border: _tableBorder),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
               (calendarDate?.dateTime.day ?? '').toString(),
-              style: TextStyle(fontSize: 16, color: Colors.black),
+              style: widget.dateStyle ??
+                  const TextStyle(fontSize: 16, color: Colors.black),
             ),
             Expanded(
-                child: ListView(
-              padding: const EdgeInsets.all(2),
-              children: List.generate(calendarDate?.events.length ?? 0, (i) {
-                final event = calendarDate?.events[i];
-                return Text('${event?.title}',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.red,
-                        fontWeight: FontWeight.w500));
-              }),
-            )),
+                child: widget.dateBuilder != null
+                    ? widget.dateBuilder!(calendarDate?.dateTime)
+                    : ListView(
+                        padding: const EdgeInsets.all(2),
+                        children: List.generate(
+                            calendarDate?.events.length ?? 0, (i) {
+                          final event = calendarDate?.events[i];
+                          return Text('${event?.title}',
+                              style: widget.eventStyle ??
+                                  const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w500));
+                        }),
+                      )),
           ],
         ),
       ),
@@ -175,14 +218,16 @@ class _CalendarViewState extends State<CalendarView> {
   Widget buildWeekday(String weekdayName) {
     return Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.4),
-          border: Border.all(color: Colors.grey.withOpacity(0.7), width: 0.5)),
+          color: widget.headerBackgroundColor ??
+              Colors.grey.withValues(alpha: 0.4),
+          border: _tableBorder),
       child: Text(
         weekdayName,
-        style: TextStyle(
-            fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
+        style: widget.headerStyle ??
+            const TextStyle(
+                fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500),
       ),
     );
   }
