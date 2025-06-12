@@ -111,14 +111,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   //     color: Colors.blue, fontWeight: FontWeight.bold),
                   // eventStyle: const TextStyle(color: Colors.black),
                   // dateBuilder: (date) {
-                  //   if (date?.day == null) {
-                  //     return Container();
-                  //   } else if (date?.day == DateTime.now().day) {
+                  //   if (date?.day == DateTime.now().day) {
                   //     return const Text('Today event');
                   //   }
-                  //   return Container(
-                  //     decoration: const BoxDecoration(color: Colors.white),
-                  //   );
+                  //   return Container();
                   // },
                   onDateClick: (calendarDate) {},
                   calendarEvents: [
