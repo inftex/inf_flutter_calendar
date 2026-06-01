@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class InfiniteWeekView extends StatefulWidget {
+class InfiniteDayPicker extends StatefulWidget {
   final double? height;
   final DateTime selectedDate;
   final String? locale;
@@ -9,7 +9,7 @@ class InfiniteWeekView extends StatefulWidget {
   final Color? selectedBackgroundColor;
   final ValueChanged<DateTime> onDateSelected;
 
-  const InfiniteWeekView({
+  const InfiniteDayPicker({
     super.key,
     this.height,
     required this.selectedDate,
@@ -20,10 +20,10 @@ class InfiniteWeekView extends StatefulWidget {
   });
 
   @override
-  State<InfiniteWeekView> createState() => _InfiniteWeekViewState();
+  State<InfiniteDayPicker> createState() => _InfiniteDayPickerState();
 }
 
-class _InfiniteWeekViewState extends State<InfiniteWeekView> {
+class _InfiniteDayPickerState extends State<InfiniteDayPicker> {
   static const int _initialPage = 10000;
 
   late final PageController _pageController;

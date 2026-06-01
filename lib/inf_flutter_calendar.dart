@@ -7,4 +7,5 @@ export 'utils/calendar_utils.dart';
 
 // views
 export 'views/calendar_view.dart';
-export 'views/infinite_week_view.dart';
+export 'views/infinite_day_picker.dart';
+export 'views/infinite_week_picker.dart';
