@@ -173,11 +173,11 @@ class _InfiniteWeekPickerState extends State<InfiniteWeekPicker> {
                         Text(
                           DateFormat.E(
                             widget.locale,
-                          ).format(date).substring(0, 1),
+                          ).format(date),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
-                            color: Colors.black,
+                            color: Colors.black54,
                           ),
                         ),
                         const SizedBox(height: 4),
